@@ -45,5 +45,4 @@ def Coin_name(message):
             bot.send_message(message.from_user.id, 'Error')
             return
 
-
 bot.infinity_polling()
