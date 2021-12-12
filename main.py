@@ -24,25 +24,32 @@ def date_high_low(json, symbol):
 
 @bot.message_handler()
 def get_text_messages(message):
-    if message.text == '/help':
+    if message.text == '/help': # if message.text == '/help' or '/start': Всё ломает почему?
         bot.send_message(message.from_user.id, "Вот что я могу:"
                                                "/high_low Показывает максимльную и минимальную цену на сегодня\n"
                                                "Функционал ещё будет обещаю")
     if message.text == '/high_low':
-        bot.send_message(message.from_user.id, "Выберете криптовалюту /BTC , /LTC , /ETH , /XRP , /BCH , /ETC")
+        bot.send_message(message.from_user.id, "Выберите криптовалюту /BTC , /LTC , /ETH , /XRP , /BCH , /ETC , /All")
         bot.register_next_step_handler(message, Coin_name)
 
 
 def Coin_name(message):
-    for i in range(len(coins)):
+    if message.text == '/All':
+        for j in range(len(coins)):
+            data = date_high_low(cg, coins[j])
+            bot.send_message(message.from_user.id, f'Пики цен {coins[j]} на сегодня: \n'
+                                                   f'Наивысшая {data[0]} USD\nМинимальная {data[1]} USD')
+        return
+    for i in range(len(coins)-1):
         if message.text[1:] == coins[i]:
             data = date_high_low(cg,  message.text[-1:])
             bot.send_message(message.from_user.id, f'Пики цен {message.text[1:]} на сегодня: \n'
                                                    f'Наивысшая {data[0]} USD\nМинимальная {data[1]} USD')
             return
         else:
-            print('Повторите пожалуйста')
-            bot.send_message(message.from_user.id, 'Error')
+            print('Error')
+            bot.send_message(message.from_user.id, 'Повторите пожалуйста')
             return
+
 
 bot.infinity_polling()
